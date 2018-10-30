@@ -29,7 +29,7 @@ BabyDataSet = list(zip(names, births))
 df = pd.DataFrame(data=BabyDataSet, columns=["Names", "Births"])
 
 # CSV Import / Export
-Location = r'C:\Users\pu171\PythonDevelopment\Tutorials\Pandas\births1880.csv'
+Location = r'C:\Users\pu171\PythonDevelopment\Tutorials\Pandas\Lessons\births1880.csv'
 df.to_csv(Location, index=False, header=False)
 df = pd.read_csv(Location)
 
