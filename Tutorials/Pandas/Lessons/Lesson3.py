@@ -135,7 +135,7 @@ YearMonth = All.groupby([lambda x: x.year, lambda x: x.month])
 All['Max'] = YearMonth['CustomerCount'].transform(lambda x: x.max())
 
 # Compare to some sales goal (BHAG)
-data = [1000,2000,3000]
+data = [1000, 2000, 3000]
 idx = pd.date_range(start='12/31/2011', end='12/31/2013', freq='A')
 BHAG = pd.DataFrame(data, index=idx, columns=["BHAG"])
 
@@ -143,7 +143,7 @@ BHAG = pd.DataFrame(data, index=idx, columns=["BHAG"])
 combined = pd.concat([All, BHAG], axis=0)
 
 # Plot multiple series
-fig, axes = plt.subplots(figsize=(12,7))  # Define layout
+fig, axes = plt.subplots(figsize=(12, 7))  # Define layout
 combined['BHAG'].fillna(method='pad').plot(color='green', label='BHAG')
 combined['Max'].plot(color='blue', label='All Markets')
 plt.legend(loc='best')
@@ -151,3 +151,27 @@ plt.show()
 
 # Forecast and visualize ######################################################
 
+# Get YoY pct change in customer count, predict as linear change
+Year = combined.groupby(lambda x: x.year).max()
+Year['YR_PCT_Change'] = Year['Max'].pct_change(periods=1)
+Year.loc[2013, 'CustomerCount'] = (
+    1 + Year.loc[2012, 'YR_PCT_Change']) * Year.loc[2012, 'Max']
+
+# Plot graphs
+All['Max'].plot(figsize=(10,5)); plt.title('All Markets'); plt.show()
+
+# Small multiples
+fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(20,10))
+fig.subplots_adjust(hspace=1.0)
+
+Daily.loc['FL']['CustomerCount']['2012':].fillna(method='pad').plot(ax=axes[0,0])
+Daily.loc['GA']['CustomerCount']['2012':].fillna(method='pad').plot(ax=axes[0,1])
+Daily.loc['TX']['CustomerCount']['2012':].fillna(method='pad').plot(ax=axes[1,0])
+Daily.loc['NY']['CustomerCount']['2012':].fillna(method='pad').plot(ax=axes[1,1])
+
+axes[0,0].set_title('Florida')
+axes[0,1].set_title('Georgia')
+axes[1,0].set_title('Texas')
+axes[1,1].set_title('New York')
+
+plt.show()
