@@ -37,6 +37,6 @@ df.iloc[0:3]
 # Can pass values of index positions with named column indices
 df.loc[df.index[0:3], 'Rev']
 df.loc[df.index[5: ], 'col']
-df
+df.loc[df.index[ :3], ['col', 'test']]
 
 
